@@ -1,0 +1,42 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: postgres
+    networks:
+      airline_net:
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=flightdb
+    ports:
+      - "5432:5432"
+    volumes:
+      # CSVs the init script COPYs from
+      - ./csv_data:/csv_data
+      # anything in this folder runs automatically on FIRST start only
+      - ./init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d flightdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  puppygraph:
+    image: puppygraph/puppygraph:stable
+    container_name: puppygraph
+    networks:
+      airline_net:
+    environment:
+      - PUPPYGRAPH_USERNAME=puppygraph
+      - PUPPYGRAPH_PASSWORD=puppygraph123
+    ports:
+      - "8081:8081"   # Web UI
+      - "8182:8182"   # Gremlin
+      - "7687:7687"   # openCypher over Bolt
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+networks:
+  airline_net:
+    name: puppy-airline

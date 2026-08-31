@@ -1,0 +1,329 @@
+{
+  "catalog": [
+    {
+      "name": "flight_data",
+      "type": "postgresql",
+      "jdbc": {
+        "username": "postgres",
+        "password": "postgres",
+        "jdbcUri": "jdbc:postgresql://postgres:5432/flightdb",
+        "driverClass": "org.postgresql.Driver"
+      }
+    }
+  ],
+  "node": [
+    {
+      "label": "Airport",
+      "dataSourceGroup": {
+        "externalDataSource": {
+          "enabled": true,
+          "catalog": "flight_data",
+          "schema": "air",
+          "table": "airports"
+        }
+      },
+      "id": [
+        {
+          "name": "iata",
+          "type": "STRING"
+        }
+      ],
+      "attribute": [
+        {
+          "name": "iata",
+          "type": "STRING"
+        },
+        {
+          "name": "name",
+          "type": "STRING"
+        },
+        {
+          "name": "city",
+          "type": "STRING"
+        },
+        {
+          "name": "country_id",
+          "type": "STRING"
+        },
+        {
+          "name": "latitude",
+          "type": "DOUBLE"
+        },
+        {
+          "name": "longitude",
+          "type": "DOUBLE"
+        },
+        {
+          "name": "altitude_ft",
+          "type": "INT"
+        },
+        {
+          "name": "timezone",
+          "type": "STRING"
+        }
+      ]
+    },
+    {
+      "label": "Country",
+      "dataSourceGroup": {
+        "externalDataSource": {
+          "enabled": true,
+          "catalog": "flight_data",
+          "schema": "air",
+          "table": "countries"
+        }
+      },
+      "id": [
+        {
+          "name": "country_id",
+          "type": "STRING"
+        }
+      ],
+      "attribute": [
+        {
+          "name": "country_id",
+          "type": "STRING"
+        },
+        {
+          "name": "country_name",
+          "type": "STRING"
+        }
+      ]
+    },
+    {
+      "label": "Airline",
+      "dataSourceGroup": {
+        "externalDataSource": {
+          "enabled": true,
+          "catalog": "flight_data",
+          "schema": "air",
+          "table": "airlines"
+        }
+      },
+      "id": [
+        {
+          "name": "airline_id",
+          "type": "STRING"
+        }
+      ],
+      "attribute": [
+        {
+          "name": "airline_id",
+          "type": "STRING"
+        },
+        {
+          "name": "name",
+          "type": "STRING"
+        },
+        {
+          "name": "iata",
+          "type": "STRING"
+        },
+        {
+          "name": "icao",
+          "type": "STRING"
+        },
+        {
+          "name": "country_id",
+          "type": "STRING"
+        },
+        {
+          "name": "is_active",
+          "type": "INT"
+        }
+      ]
+    }
+  ],
+  "edge": [
+    {
+      "label": "FLIES_TO",
+      "fromNodeLabel": "Airport",
+      "toNodeLabel": "Airport",
+      "dataSourceGroup": {
+        "externalDataSource": {
+          "enabled": true,
+          "catalog": "flight_data",
+          "schema": "air",
+          "table": "flight_routes"
+        }
+      },
+      "id": [
+        {
+          "name": "pair_id",
+          "type": "STRING"
+        }
+      ],
+      "fromKey": [
+        {
+          "name": "src_iata",
+          "type": "STRING"
+        }
+      ],
+      "toKey": [
+        {
+          "name": "dst_iata",
+          "type": "STRING"
+        }
+      ],
+      "attribute": [
+        {
+          "name": "src_iata",
+          "type": "STRING"
+        },
+        {
+          "name": "dst_iata",
+          "type": "STRING"
+        },
+        {
+          "name": "airline_count",
+          "type": "INT"
+        },
+        {
+          "name": "airlines",
+          "type": "STRING"
+        },
+        {
+          "name": "distance_km",
+          "type": "INT"
+        },
+        {
+          "name": "is_domestic",
+          "type": "INT"
+        }
+      ]
+    },
+    {
+      "label": "LOCATED_IN",
+      "fromNodeLabel": "Airport",
+      "toNodeLabel": "Country",
+      "dataSourceGroup": {
+        "externalDataSource": {
+          "enabled": true,
+          "catalog": "flight_data",
+          "schema": "air",
+          "table": "airports",
+          "enableNullFilter": true
+        }
+      },
+      "id": [
+        {
+          "name": "iata",
+          "type": "STRING"
+        }
+      ],
+      "fromKey": [
+        {
+          "name": "iata",
+          "type": "STRING"
+        }
+      ],
+      "toKey": [
+        {
+          "name": "country_id",
+          "type": "STRING"
+        }
+      ],
+      "attribute": [
+        {
+          "name": "iata",
+          "type": "STRING"
+        },
+        {
+          "name": "country_id",
+          "type": "STRING"
+        },
+        {
+          "name": "city",
+          "type": "STRING"
+        }
+      ]
+    },
+    {
+      "label": "SERVES",
+      "fromNodeLabel": "Airline",
+      "toNodeLabel": "Airport",
+      "dataSourceGroup": {
+        "externalDataSource": {
+          "enabled": true,
+          "catalog": "flight_data",
+          "schema": "air",
+          "table": "airline_airports"
+        }
+      },
+      "id": [
+        {
+          "name": "serves_id",
+          "type": "STRING"
+        }
+      ],
+      "fromKey": [
+        {
+          "name": "airline_id",
+          "type": "STRING"
+        }
+      ],
+      "toKey": [
+        {
+          "name": "iata",
+          "type": "STRING"
+        }
+      ],
+      "attribute": [
+        {
+          "name": "airline_id",
+          "type": "STRING"
+        },
+        {
+          "name": "iata",
+          "type": "STRING"
+        }
+      ]
+    },
+    {
+      "label": "BASED_IN",
+      "fromNodeLabel": "Airline",
+      "toNodeLabel": "Country",
+      "dataSourceGroup": {
+        "externalDataSource": {
+          "enabled": true,
+          "catalog": "flight_data",
+          "schema": "air",
+          "table": "airlines",
+          "enableNullFilter": true
+        }
+      },
+      "id": [
+        {
+          "name": "airline_id",
+          "type": "STRING"
+        }
+      ],
+      "fromKey": [
+        {
+          "name": "airline_id",
+          "type": "STRING"
+        }
+      ],
+      "toKey": [
+        {
+          "name": "country_id",
+          "type": "STRING"
+        }
+      ],
+      "attribute": [
+        {
+          "name": "airline_id",
+          "type": "STRING"
+        },
+        {
+          "name": "country_id",
+          "type": "STRING"
+        },
+        {
+          "name": "name",
+          "type": "STRING"
+        }
+      ]
+    }
+  ]
+}

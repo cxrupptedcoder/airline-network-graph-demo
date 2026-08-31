@@ -1,0 +1,26 @@
+Global Airline Route Network Demo
+
+Code is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+DATA ATTRIBUTION
+----------------
+The contents of csv_data/ are derived from the OpenFlights database:
+
+    OpenFlights — https://openflights.org
+    Source files: https://github.com/jpatokal/openflights
+
+OpenFlights airport, airline and route data is made available under the
+Open Database License (ODbL):
+
+    https://opendatacommons.org/licenses/odbl/
+
+Modifications made to the original dataset:
+  - Routes with one or more stops were removed (11 of 67,663 rows)
+  - Per-airline duplicate routes were collapsed to one row per airport pair
+  - Great-circle distances were computed from coordinates using the
+    haversine formula and added as distance_km
+  - Airports without a valid three-letter IATA code or coordinates were removed
+  - Blank and whitespace-only country values were normalised to NULL
+
+Under ODbL, any public use of this data or derivatives of it must credit
+OpenFlights and share adapted databases under the same licence.
